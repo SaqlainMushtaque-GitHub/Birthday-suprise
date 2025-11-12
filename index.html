@@ -442,14 +442,21 @@
         // ---------- REAL IMAGE URLS (Replace with static paths if needed) ----------
         
         const IMAGE_PATHS = {
-    LOGO_ICON: './images/lg.jpg', // Fix case to 'images'
-    PHOTO_1: './images/img1.jpg', // Assuming this is the correct local path
-    PHOTO_2: './images/imag2.jpg',
-    PHOTO_3: './images/image3.jpg',
-    PHOTO_4: './images/img4.jpg',
-    GIFT_IMG: './images/lg.jpg', // Or whatever your local gift image is
+  LOGO_ICON: './images/lg.jpg',
+  PHOTO_1: './images/img1.jpg',   // corrected
+  PHOTO_2: './images/img2.jpg',   // corrected
+  PHOTO_3: './images/img3.jpg',   // corrected
+  PHOTO_4: './images/img4.jpg',   // use this if you have a 4th image
+  GIFT_IMG: './images/lg.jpg'
 };
 
+const cards = [
+  IMAGE_PATHS.PHOTO_1,
+  IMAGE_PATHS.PHOTO_2,
+  IMAGE_PATHS.PHOTO_3,
+  IMAGE_PATHS.PHOTO_4,
+  IMAGE_PATHS.GIFT_IMG
+];
         // Page/message content for the book (Now 4 entries: P0, P1, P2, P3)
         const BOOK_PAGES = [
             { text: "My dearest Cutiepie, on your birthday, I want you to know how much light you bring into my world 🌸. Every laugh and every smile from you is a priceless treasure. Happy Birthday!", img: IMAGE_PATHS.PHOTO_1 }, // P0
