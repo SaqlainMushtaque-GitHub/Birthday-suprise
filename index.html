@@ -165,7 +165,7 @@
             width:50%;
             height:100%;
             top:0;
-            overflow:hidden;
+            overflow:auto;
             box-shadow:0 12px 40px rgba(0,0,0,.6);
             border-radius:8px;
             background:var(--page-bg);
@@ -198,7 +198,8 @@
             box-shadow: none; /* No shadow on the stable left page */
         }
 
-        .book-page .page-inner{ font-family:'Dancing Script'; font-size:1.2rem; color:#111; line-height:1.4; text-align:center; }
+        .book-page .page-inner{ font-family:'Dancing Script'; font-size:1.2rem; color:#111; line-height:1.4; text-align:center; max-height: 85vh;     /* Prevent overflow on tall screens */
+    overflow-y: auto; }
 
         /* Buttons */
         .button-primary {
@@ -540,19 +541,26 @@ const cards = [
          * Preloads images and updates the progress bar.
          */
         function preloadImages(list) {
-    // EL refers to document.getElementById('preloader')
     const EL = document.getElementById('preloader'); 
     let loaded = 0;
     
-    // --- Correction Start ---
     const update = (resolve) => {
         loaded++;
         const percent = Math.round((loaded / list.length) * 100);
         EL.style.width = percent + '%';
-        
-        // Explicitly call resolve() for the promise to complete
         resolve('ok'); 
     };
+
+    return Promise.all(list.map(src => new Promise(resolve => {
+        const img = new Image();
+        img.onload = () => update(resolve);
+        img.onerror = () => {
+            console.warn(`Failed to load image: ${src}`);
+            update(resolve);
+        };
+        img.src = src;
+    }))).then(results => results);
+        }
 
     return Promise.all(list.map(src => new Promise(resolve => {
         const img = new Image();
@@ -614,34 +622,34 @@ const cards = [
          * Handles screen switching logic.
          */
         function goToScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(s => {
-                s.classList.remove('active');
-            });
-            const next = document.getElementById(screenId);
-            if (next) next.classList.add('active');
-            state.currentScreen = screenId;
+    document.querySelectorAll('.screen').forEach(s => {
+        s.classList.remove('active');
+    });
+    const next = document.getElementById(screenId);
+    if (next) next.classList.add('active');
+    state.currentScreen = screenId;
 
-            // Do screen-specific setup
-            if (screenId === 'cake') {
-                resetCakeState(); // Reset state when going to cake screen
-            }
-            if (screenId === 'start') {
-                 // Also reset cake state if we go back to the start screen (via replay)
-                resetCakeState(); 
-            }
-            if (screenId === 'light-up') {
-                startConfettiAnimation();
-            }
-            if (screenId === 'bloons-game') {
-                // Ensure bloons are set up correctly on every entry
-                setupBloonsGame();
-            }
-            if (screenId === 'card-swipe') {
-                renderCardStack();
-            }
-            if (screenId === 'message-book') {
-                setupMessageBook();
-            }
+    // Do screen-specific setup
+    if (screenId === 'cake') {
+        resetCakeState(); // Reset state when going to cake screen
+    }
+    if (screenId === 'start') {
+         // Also reset cake state if we go back to the start screen (via replay)
+        resetCakeState(); 
+    }
+    if (screenId === 'light-up') {
+        startConfettiAnimation();
+    }
+    if (screenId === 'bloons-game') {
+        // Ensure bloons are set up correctly on every entry
+        setupBloonsGame();
+    }
+    if (screenId === 'card-swipe') {
+        renderCardStack();
+    }
+    if (screenId === 'message-book') {
+        setupMessageBook();
+    }
         }
 
         /**
@@ -1217,6 +1225,12 @@ const cards = [
 
         // Make sure resize keeps bloons correct when container changes size
         window.addEventListener('resize', ()=> { if (state.currentScreen === 'bloons-game') setupBloonsGame(); });
+        document.addEventListener('DOMContentLoaded', () => {
+    preloadImages(Object.values(IMAGE_PATHS)).then(() => {
+        EL.preloader.style.display = 'none';
+        goToScreen('start');
+    });
+});
 
     </script>
 </body>
