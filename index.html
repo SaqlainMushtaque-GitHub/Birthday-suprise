@@ -514,19 +514,35 @@
          * Preloads images and updates the progress bar.
          */
         function preloadImages(list) {
-            let loaded = 0;
-            EL.preloaderFill.style.width = '0%';
-            return Promise.all(list.map(src => new Promise(resolve => {
-                const img = new Image();
-                img.src = src;
-                const update = () => {
-                    loaded++;
-                    EL.preloaderFill.style.width = Math.round((loaded / list.length) * 100) + '%';
-                    resolve({ src, status: 'ok' });
-                };
-                img.onload = update;
-                img.onerror = update; // Resolve even if error to prevent blocking
-            }))).then(results => results);
+    // EL refers to document.getElementById('preloader')
+    const EL = document.getElementById('preloader'); 
+    let loaded = 0;
+    
+    // --- Correction Start ---
+    const update = (resolve) => {
+        loaded++;
+        const percent = Math.round((loaded / list.length) * 100);
+        EL.style.width = percent + '%';
+        
+        // Explicitly call resolve() for the promise to complete
+        resolve('ok'); 
+    };
+
+    return Promise.all(list.map(src => new Promise(resolve => {
+        const img = new Image();
+
+        // 1. Success handler: call update and resolve
+        img.onload = () => update(resolve);
+
+        // 2. Error handler: call update and resolve (to prevent blocking)
+        img.onerror = () => {
+            console.warn(`Failed to load image: ${src}`);
+            update(resolve);
+        };
+        
+        img.src = src;
+    }))).then(results => results);
+    // --- Correction End ---
         }
 
         /**
