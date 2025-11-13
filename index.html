@@ -1,15 +1,14 @@
-<!DOCTYPE html>
+here<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title>Happy Birthday, Rooh e man</title>
 
-    <!-- Tailwind CSS for styling and responsiveness -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root{
             --primary-pink:#FF69B4;
@@ -57,6 +56,14 @@
             opacity:1;
             pointer-events:auto;
         }
+        
+        /* FIX: Initial state for the main content wrapper */
+        #app-wrapper {
+            display: none; /* Hide all content initially */
+            position: absolute;
+            inset: 0;
+            z-index: 1; /* Below the preloader */
+        }
 
         /* small util */
         .app-logo { object-fit:cover; border-radius:50%; border:3px solid var(--primary-pink); box-shadow:0 0 15px rgba(255,105,180,.6); }
@@ -82,8 +89,6 @@
             pointer-events: none;
             will-change: transform, opacity;
         }
-
-        /* Uses CSS variables injected by JS for custom trajectory */
         @keyframes firework-explode {
             0% { transform: translate(-50%, -50%) scale(0.1); opacity: 1; }
             30% { opacity: 1; }
@@ -130,7 +135,6 @@
         .cake-bloon-wrapper:hover {
             transform: scale(1.05);
         }
-        /* Uses the same pop effect as game bloons */
         .cake-bloon-wrapper.popped .bloon-text {
             transform: scale(.1) translateY(-20px) rotate(180deg); opacity:0;
         }
@@ -149,7 +153,7 @@
             font-size:3rem; 
             filter: drop-shadow(0 3px 6px rgba(0,0,0,.4)); 
             transition: transform .18s ease, opacity .18s ease; 
-            display: inline-block; /* Ensure transform applies */
+            display: inline-block; 
         }
         /* Bloons Game Pop */
         .bloon-text.pop { transform: scale(.1) translateY(-20px) rotate(180deg); opacity:0; }
@@ -197,17 +201,25 @@
             box-shadow: none; /* No shadow on the stable left page */
         }
 
-        .book-page .page-inner{ font-family:'Lora, serif'; font-size:1.2rem; color:#111; line-height:1.4; text-align:center; max-height: 85vh;     /* Prevent overflow on tall screens */
-    overflow-y: auto; }
+        .book-page .page-inner{ 
+            font-family:'Lora, serif'; 
+            font-size:1.2rem; 
+            color:#111; 
+            line-height:1.4; 
+            text-align:center; 
+            max-height: 85vh;     /* Prevent overflow on tall screens */
+            overflow-y: auto; 
+            width: 100%;
+        }
         .book-page .page-inner img {
-    width: 100%;
-    max-width: 380px;    /* or 100% for full width */
-    height: auto;
-    display: block;
-    margin: 0 auto 16px auto; /* Center the image with space below */
-    object-fit: contain;
-    border-radius: 9px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.10);
+            width: 100%;
+            max-width: 380px;
+            height: auto;
+            display: block;
+            margin: 0 auto 16px auto; 
+            object-fit: contain;
+            border-radius: 9px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.10);
         }
 
         /* Buttons */
@@ -222,18 +234,21 @@
 
         /* responsive tweaks */
         @media (max-width: 700px) {
-    .book-container { max-width: 97vw; height: 60vh; }
-    .book-page { padding: 0.6rem !important; }
-    .book-page .page-inner img { max-width: 90vw; }
-    .book-page .page-inner { font-size: 1.0rem; max-height: 54vh;}
+            .book-container { max-width: 97vw; height: 65vh; } 
+            .book-page { padding: 0.6rem !important; }
+            .book-page .page-inner img { max-width: 90vw; max-height: 40vh; } 
+            .book-page .page-inner { font-size: 1.0rem; max-height: 54vh;}
             .bloon-text { font-size:2.2rem; }
-            .book-container { height:55vh; }
+            .book-page { width: 48%; }
+            .book-page.right { right: 0; }
+            .book-page.left { left: 0; }
         }
 
         /* Preloader overlay */
         #preloader {
             position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; background: linear-gradient(180deg, rgba(0,0,0,.6), rgba(0,0,0,.9));
             flex-direction:column; gap:.75rem; color:#fff;
+            transition: opacity 0.45s ease;
         }
         #preloader .bar { width:240px; height:8px; background:rgba(255,255,255,.08); border-radius:99px; overflow:hidden; }
         #preloader .bar .fill { height:100%; width:0%; background:linear-gradient(90deg,var(--primary-pink),var(--primary-purple)); border-radius:99px; transition:width .2s linear; }
@@ -241,7 +256,6 @@
 </head>
 
 <body>
-    <!-- PRELOADER -->
     <div id="preloader" aria-hidden="false">
         <div class="text-center">
             <div style="font-family:'Dancing Script',cursive;font-size:28px">Preparing your surprise…</div>
@@ -254,199 +268,180 @@
 
     <div class="bg-gradient-radial" aria-hidden="true"></div>
 
-    <!-- START SCREEN -->
-    <main id="start" class="screen active flex flex-col items-center justify-center text-center gap-6 p-6">
-        <div class="flex flex-col items-center">
-            <div class="w-32 h-32 mb-4">
-                <img id="logo-img" src="./images/lg.jpg" alt="Profile Icon" class="app-logo w-full h-full">
-            </div>
+    <div id="app-wrapper">
 
-            <h1 class="text-4xl sm:text-5xl font-bold mb-1" style="font-family:'Dancing Script',cursive;">
-                A <span id="start-screen-name">Cutiepie</span> was born today,
-            </h1>
-            <h2 class="text-3xl sm:text-4xl font-extrabold mb-3">
-                <span id="start-screen-age">26 years ago!</span>
-            </h2>
-
-            <p class="text-lg muted mb-6">Yes, it's YOU — a little surprise awaits...</p>
-
-            <div class="w-full max-w-xs">
-                <input id="age-input" type="number" placeholder="Your Age (e.g., 26)" value="26"
-                        class="w-full p-3 rounded-xl bg-white bg-opacity-10 border border-pink-500 text-center text-white focus:outline-none mb-3" />
-                <button id="start-btn" onclick="startTheSurprise()" class="button-primary w-full p-3 rounded-xl text-lg">Start the surprise</button>
-            </div>
-        </div>
-    </main>
-
-    <!-- CAKE SCREEN -->
-    <section id="cake" class="screen flex items-center justify-center p-6">
-        <div class="flex flex-col items-center relative w-full max-w-lg h-full justify-center">
-            
-            <!-- Bloons/Hearts on the Left -->
-            <div class="cake-bloon-wrapper" data-id="1" style="left: 10%; top: 30%;" data-msg="Happy!" onclick="popCakeBloon(event)">
-                <div class="bloon-text text-3xl">❤️</div>
-                <div class="cake-bloon-message"></div>
-            </div>
-            <div class="cake-bloon-wrapper" data-id="2" style="left: 20%; top: 60%;" data-msg="Sweetheart" onclick="popCakeBloon(event)">
-                <div class="bloon-text text-2xl">❤️</div>
-                <div class="cake-bloon-message"></div>
-            </div>
-            <div class="cake-bloon-wrapper" data-id="3" style="left: 5%; top: 75%;" data-msg="Cutie" onclick="popCakeBloon(event)">
-                <div class="bloon-text text-xl">❤️</div>
-                <div class="cake-bloon-message"></div>
-            </div>
-
-            <div class="w-64 h-64 sm:w-80 sm:h-80 relative mb-8">
-                <!-- Cake SVG -->
-                <svg viewBox="0 0 400 300" class="cake-shadow">
-                    <!-- BOTTOM CAKE LAYER (Chocolate) -->
-                    <rect x="70" y="190" width="260" height="30" rx="10" fill="#4B2A0F"/>
-                    <ellipse cx="200" cy="190" rx="130" ry="10" fill="#3B200C"/>
-                    <!-- MIDDLE CAKE LAYER (Chocolate) -->
-                    <rect x="90" y="140" width="220" height="50" rx="10" fill="#4B2A0F"/>
-                    <ellipse cx="200" cy="140" rx="110" ry="10" fill="#3B200C"/>
-                    <!-- TOP CAKE LAYER (Chocolate) -->
-                    <rect x="110" y="90" width="180" height="50" rx="10" fill="#4B2A0F"/>
-                    <!-- TOP ICING (White Drizzle) -->
-                    <ellipse cx="200" cy="90" rx="90" ry="15" fill="#FFFFFF" stroke="#CCCCCC" stroke-width="2"/>
-                    <!-- Drips: Simulating the thick drips over the side -->
-                    <path d="M110 90 Q 120 100 130 90 L 135 110 Q 150 120 165 110 L 170 90" fill="#FFFFFF"/>
-                    <path d="M290 90 Q 280 100 270 90 L 265 110 Q 250 120 235 110 L 230 90" fill="#FFFFFF"/>
-                    <!-- Candle Group (Single Central Candle - Red) -->
-                    <g id="candle-group">
-                        <g class="cake-candle" data-index="0">
-                            <rect x="195" y="40" width="10" height="50" rx="5" fill="#C02040"/>
-                            <ellipse id="cake-flame-1" cx="200" cy="30" rx="5" ry="10" fill="#FFA500" style="display:none;"/>
-                        </g>
-                    </g>
-                    <g id="cake-decoration-group"></g>
-                </svg>
-            </div>
-            
-            <!-- Bloons/Hearts on the Right -->
-            <div class="cake-bloon-wrapper" data-id="4" style="right: 10%; top: 30%;" data-msg="Birthday!" onclick="popCakeBloon(event)">
-                <div class="bloon-text text-3xl">❤️</div>
-                <div class="cake-bloon-message"></div>
-            </div>
-            <div class="cake-bloon-wrapper" data-id="5" style="right: 20%; top: 60%;" data-msg="Love" onclick="popCakeBloon(event)">
-                <div class="bloon-text text-2xl">❤️</div>
-                <div class="cake-bloon-message"></div>
-            </div>
-            <div class="cake-bloon-wrapper" data-id="6" style="right: 5%; top: 75%;" data-msg="You" onclick="popCakeBloon(event)">
-                <div class="bloon-text text-xl">❤️</div>
-                <div class="cake-bloon-message"></div>
-            </div>
-
-            <button id="decorate-button" onclick="decorateCake()" class="button-primary p-3 rounded-xl text-lg">Decorate</button>
-            <p id="happy-birthday-message" class="absolute top-14 text-4xl font-extrabold" style="font-family:'Dancing Script',cursive; opacity:0; transition:opacity .8s;">Happy Birthday, <span id="display-name">Cutiepie</span>!</p>
-        </div>
-    </section>
-
-    <!-- LIGHT-UP (confetti screen) -->
-    <section id="light-up" class="screen flex items-center justify-center p-6">
-        <div id="confetti-container" class="relative w-full h-full max-w-4xl"></div>
-    </section>
-
-    <!-- CONFETTI MESSAGE -->
-    <section id="confetti-message" class="screen flex flex-col items-center justify-center p-6 gap-4">
-        <div class="text-center">
-            <div class="text-4xl" style="font-family:'Dancing Script',cursive;">You are</div>
-            <div class="text-5xl" style="font-family:'Dancing Script',cursive;">my</div>
-            <div class="text-4xl">world</div>
-        </div>
-    </section>
-
-    <!-- BLOONS GAME -->
-    <section id="bloons-game" class="screen flex flex-col items-center justify-center p-4 gap-4">
-        <h2 class="text-2xl font-bold" style="font-family:'Dancing Script',cursive;">Tap the Hearts for Secret Messages!</h2>
-        <p class="muted">Messages Revealed: <span id="bloons-popped-count">0</span> / <span id="bloons-total">0</span></p>
-        <div id="bloons-game-area" class="relative w-full max-w-lg h-[60vh] bg-transparent overflow-hidden rounded-md"></div>
-    </section>
-
-    <!-- CARD SWIPE -->
-    <section id="card-swipe" class="screen flex flex-col items-center justify-center p-4 gap-4">
-        <h2 class="text-2xl font-bold" style="font-family:'Dancing Script',cursive;">Some Sweet Moments</h2>
-        <p class="muted">(Tap the card)</p>
-        <div id="card-stack" class="relative w-64 h-80 sm:w-80 sm:h-96 mb-4"></div>
-        <button onclick="openMessage()" class="button-primary p-3 rounded-xl text-lg">Open My Message</button>
-    </section>
-
-    <!-- MESSAGE BOOK -->
-    <section id="message-book" class="screen flex flex-col items-center justify-center p-4 gap-4">
-        <h2 class="text-2xl font-bold" style="font-family:'Dancing Script',cursive;">A Special Message</h2>
-
-        <div class="book-container">
-            <div id="book" class="book">
-                <!-- Left Stable Content Page (P_i-1) -->
-                <div class="book-page left left-content" id="book-page-left">
-                    <div class="page-inner" id="book-page-left-inner">
-                        <h3 class="text-xl font-bold">This is the back cover.</h3>
-                        <p class="mt-4">Flip the cover to start reading.</p>
-                    </div>
+        <main id="start" class="screen active flex flex-col items-center justify-center text-center gap-6 p-6">
+            <div class="flex flex-col items-center">
+                <div class="w-32 h-32 mb-4">
+                    <img id="logo-img" src="./images/lg.jpg" alt="Profile Icon" class="app-logo w-full h-full">
                 </div>
 
-                <!-- Right Flippable Page (This acts as the Cover initially) -->
-                <div class="book-page right cover-page" id="book-page-cover">
-                    <div class="page-inner">
-                        <h3 class="text-2xl font-bold">A Book of Love</h3>
-                        <p class="mt-4">By Your Secret Admirer</p>
-                    </div>
+                <h1 class="text-4xl sm:text-5xl font-bold mb-1" style="font-family:'Dancing Script',cursive;">
+                    A <span id="start-screen-name">Cutiepie</span> was born today,
+                </h1>
+                <h2 class="text-3xl sm:text-4xl font-extrabold mb-3">
+                    <span id="start-screen-age">26 years ago!</span>
+                </h2>
+
+                <p class="text-lg muted mb-6">Yes, it's YOU — a little surprise awaits...</p>
+
+                <div class="w-full max-w-xs">
+                    <input id="age-input" type="number" placeholder="Your Age ()" value="I Love You Meri Gulab 💕"
+                            class="w-full p-3 rounded-xl bg-white bg-opacity-10 border border-pink-500 text-center text-white focus:outline-none mb-3" />
+                    <button id="start-btn" onclick="startTheSurprise()" class="button-primary w-full p-3 rounded-xl text-lg">Start the surprise</button>
+                </div>
+            </div>
+        </main>
+
+        <section id="cake" class="screen flex items-center justify-center p-6">
+            <div class="flex flex-col items-center relative w-full max-w-lg h-full justify-center">
+                
+                <div class="cake-bloon-wrapper" data-id="1" style="left: 10%; top: 30%;" data-msg="Happy!" onclick="popCakeBloon(event)">
+                    <div class="bloon-text text-3xl">❤️</div>
+                    <div class="cake-bloon-message"></div>
+                </div>
+                <div class="cake-bloon-wrapper" data-id="2" style="left: 20%; top: 60%;" data-msg="Sweetheart" onclick="popCakeBloon(event)">
+                    <div class="bloon-text text-2xl">❤️</div>
+                    <div class="cake-bloon-message"></div>
+                </div>
+                <div class="cake-bloon-wrapper" data-id="3" style="left: 5%; top: 75%;" data-msg="Cutie" onclick="popCakeBloon(event)">
+                    <div class="bloon-text text-xl">❤️</div>
+                    <div class="cake-bloon-message"></div>
+                </div>
+
+                <div class="w-64 h-64 sm:w-80 sm:h-80 relative mb-8">
+                    <svg viewBox="0 0 400 300" class="cake-shadow">
+                        <rect x="70" y="190" width="260" height="30" rx="10" fill="#4B2A0F"/>
+                        <ellipse cx="200" cy="190" rx="130" ry="10" fill="#3B200C"/>
+                        <rect x="90" y="140" width="220" height="50" rx="10" fill="#4B2A0F"/>
+                        <ellipse cx="200" cy="140" rx="110" ry="10" fill="#3B200C"/>
+                        <rect x="110" y="90" width="180" height="50" rx="10" fill="#4B2A0F"/>
+                        <ellipse cx="200" cy="90" rx="90" ry="15" fill="#FFFFFF" stroke="#CCCCCC" stroke-width="2"/>
+                        <path d="M110 90 Q 120 100 130 90 L 135 110 Q 150 120 165 110 L 170 90" fill="#FFFFFF"/>
+                        <path d="M290 90 Q 280 100 270 90 L 265 110 Q 250 120 235 110 L 230 90" fill="#FFFFFF"/>
+                        <g id="candle-group">
+                            <g class="cake-candle" data-index="0">
+                                <rect x="195" y="40" width="10" height="50" rx="5" fill="#C02040"/>
+                                <ellipse id="cake-flame-1" cx="200" cy="30" rx="5" ry="10" fill="#FFA500" style="display:none;"/>
+                            </g>
+                        </g>
+                        <g id="cake-decoration-group"></g>
+                    </svg>
                 </div>
                 
-                <!-- Right Stable Content Page (P_i) - This will be covered by the cover page until flipped -->
-                <div class="book-page right" id="book-page-right">
-                    <div class="page-inner" id="book-page-right-inner">
-                        <h3 class="text-2xl font-bold">Tap 'Open Book' Below</h3>
-                        <p class="mt-4">You're about to read something special...</p>
-                    </div>
+                <div class="cake-bloon-wrapper" data-id="4" style="right: 10%; top: 30%;" data-msg="Birthday!" onclick="popCakeBloon(event)">
+                    <div class="bloon-text text-3xl">❤️</div>
+                    <div class="cake-bloon-message"></div>
+                </div>
+                <div class="cake-bloon-wrapper" data-id="5" style="right: 20%; top: 60%;" data-msg="Love" onclick="popCakeBloon(event)">
+                    <div class="bloon-text text-2xl">❤️</div>
+                    <div class="cake-bloon-message"></div>
+                </div>
+                <div class="cake-bloon-wrapper" data-id="6" style="right: 5%; top: 75%;" data-msg="You" onclick="popCakeBloon(event)">
+                    <div class="bloon-text text-xl">❤️</div>
+                    <div class="cake-bloon-message"></div>
                 </div>
 
+                <button id="decorate-button" onclick="decorateCake()" class="button-primary p-3 rounded-xl text-lg">Decorate</button>
+                <p id="happy-birthday-message" class="absolute top-14 text-4xl font-extrabold" style="font-family:'Dancing Script',cursive; opacity:0; transition:opacity .8s;">Happy Birthday, <span id="display-name">Cutiepie</span>!</p>
             </div>
-        </div>
+        </section>
 
-        <div class="flex gap-2 mt-4">
-            <button id="flip-cover-button" class="button-primary p-3 px-6 rounded-lg" onclick="flipCover()">Open Book</button>
-            <button id="prev-page" class="p-3 rounded-lg bg-white bg-opacity-10 hidden" onclick="changePage(-1)">Prev Page</button>
-            <button id="next-page" class="p-3 rounded-lg bg-white bg-opacity-10 hidden" onclick="changePage(1)">Next Page</button>
-        </div>
-    </section>
+        <section id="light-up" class="screen flex items-center justify-center p-6">
+            <div id="confetti-container" class="relative w-full h-full max-w-4xl"></div>
+        </section>
 
-    <!-- GIFT -->
-    <section id="gift-box" class="screen flex flex-col items-center justify-center p-6 gap-4">
-        <h2 class="text-3xl font-bold" style="font-family:'Dancing Script',cursive;">One Last Thing...</h2>
-        <div id="gift-box-image" class="w-64 h-64 relative cursor-pointer transition-transform hover:scale-105" onclick="tapGift()">
-            <!-- Gift svg kept similar to original but simplified -->
-            <svg viewBox="0 0 300 300" class="w-full h-full">
-                <rect x="50" y="120" width="200" height="150" rx="15" fill="#C02040"/>
-                <rect x="50" y="120" width="200" height="150" rx="15" stroke="#FFFFFF" stroke-width="5" fill="none"/>
-                <rect x="30" y="90" width="240" height="40" rx="10" fill="#E04060"/>
-                <rect x="30" y="90" width="240" height="40" rx="10" stroke="#FFFFFF" stroke-width="5" fill="none"/>
-                <rect x="135" y="100" width="30" height="170" fill="#FFFFFF" opacity="0.8"/>
-                <rect x="30" y="100" width="240" height="30" fill="#FFFFFF" opacity="0.8"/>
-                <circle cx="150" cy="115" r="30" fill="#FFC0CB"/>
-                <path d="M150 115 L120 85 Q 150 80 180 85 Z" fill="#FFC0CB"/>
-                <path d="M150 115 L120 145 Q 150 150 180 145 Z" fill="#FFC0CB"/>
-                <circle cx="150" cy="115" r="15" fill="#E04060"/>
-            </svg>
-        </div>
-        <p class="muted">Tap the gift to unwrap</p>
-    </section>
-
-    <!-- FINAL -->
-    <section id="final-message" class="screen flex flex-col items-center justify-center p-6 gap-4">
-        <div class="bg-gradient-to-br from-purple-800 to-pink-600 p-8 rounded-3xl shadow-2xl max-w-md w-full text-center">
-            <div class="w-16 h-16 mx-auto mb-4">
-                <img id="final-logo" src="" alt="Profile Icon" class="app-logo w-full h-full">
+        <section id="confetti-message" class="screen flex flex-col items-center justify-center p-6 gap-4">
+            <div class="text-center">
+                <div class="text-4xl" style="font-family:'Dancing Script',cursive;">You are</div>
+                <div class="text-5xl" style="font-family:'Dancing Script',cursive;">my</div>
+                <div class="text-4xl">world</div>
             </div>
-            <p class="text-3xl font-bold">Lots of love for you ❤️</p>
-            <p class="muted mt-2 mb-4">Once again, Happy Birthday! Hope you loved your surprise!</p>
-            <div class="flex justify-center gap-2">
-                <button class="button-primary p-2 px-4 rounded-full" onclick="goToScreen('start')">Replay</button>
-                <a class="p-2 px-4 rounded-full bg-white bg-opacity-10" href="#" id="download-link">Save Page</a>
-            </div>
-        </div>
-    </section>
+        </section>
 
+        <section id="bloons-game" class="screen flex flex-col items-center justify-center p-4 gap-4">
+            <h2 class="text-2xl font-bold" style="font-family:'Dancing Script',cursive;">Tap the Hearts for Secret Messages!</h2>
+            <p class="muted">Messages Revealed: <span id="bloons-popped-count">0</span> / <span id="bloons-total">0</span></p>
+            <div id="bloons-game-area" class="relative w-full max-w-lg h-[60vh] bg-transparent overflow-hidden rounded-md"></div>
+        </section>
+
+        <section id="card-swipe" class="screen flex flex-col items-center justify-center p-4 gap-4">
+            <h2 class="text-2xl font-bold" style="font-family:'Dancing Script',cursive;">Some Sweet Moments</h2>
+            <p class="muted">(Tap the card)</p>
+            <div id="card-stack" class="relative w-64 h-80 sm:w-80 sm:h-96 mb-4"></div>
+            <button onclick="openMessage()" class="button-primary p-3 rounded-xl text-lg">Open My Message</button>
+        </section>
+
+        <section id="message-book" class="screen flex flex-col items-center justify-center p-4 gap-4">
+            <h2 class="text-2xl font-bold" style="font-family:'Dancing Script',cursive;">A Special Message</h2>
+
+            <div class="book-container">
+                <div id="book" class="book">
+                    <div class="book-page left left-content" id="book-page-left">
+                        <div class="page-inner" id="book-page-left-inner">
+                            <h3 class="text-xl font-bold">This is the back cover.</h3>
+                            <p class="mt-4">Flip the cover to start reading.</p>
+                        </div>
+                    </div>
+
+                    <div class="book-page right cover-page" id="book-page-cover">
+                        <div class="page-inner">
+                            <h3 class="text-2xl font-bold">A Book of Love</h3>
+                            <p class="mt-4">By Your Secret Admirer</p>
+                        </div>
+                    </div>
+                    
+                    <div class="book-page right" id="book-page-right">
+                        <div class="page-inner" id="book-page-right-inner">
+                            <h3 class="text-2xl font-bold">Tap 'Open Book' Below</h3>
+                            <p class="mt-4">You're about to read something special...</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="flex gap-2 mt-4">
+                <button id="flip-cover-button" class="button-primary p-3 px-6 rounded-lg" onclick="flipCover()">Open Book</button>
+                <button id="prev-page" class="p-3 rounded-lg bg-white bg-opacity-10 hidden" onclick="changePage(-1)">Prev Page</button>
+                <button id="next-page" class="p-3 rounded-lg bg-white bg-opacity-10 hidden" onclick="changePage(1)">Next Page</button>
+            </div>
+        </section>
+
+        <section id="gift-box" class="screen flex flex-col items-center justify-center p-6 gap-4">
+            <h2 class="text-3xl font-bold" style="font-family:'Dancing Script',cursive;">One Last Thing...</h2>
+            <div id="gift-box-image" class="w-64 h-64 relative cursor-pointer transition-transform hover:scale-105" onclick="tapGift()">
+                <svg viewBox="0 0 300 300" class="w-full h-full">
+                    <rect x="50" y="120" width="200" height="150" rx="15" fill="#C02040"/>
+                    <rect x="50" y="120" width="200" height="150" rx="15" stroke="#FFFFFF" stroke-width="5" fill="none"/>
+                    <rect x="30" y="90" width="240" height="40" rx="10" fill="#E04060"/>
+                    <rect x="30" y="90" width="240" height="40" rx="10" stroke="#FFFFFF" stroke-width="5" fill="none"/>
+                    <rect x="135" y="100" width="30" height="170" fill="#FFFFFF" opacity="0.8"/>
+                    <rect x="30" y="100" width="240" height="30" fill="#FFFFFF" opacity="0.8"/>
+                    <circle cx="150" cy="115" r="30" fill="#FFC0CB"/>
+                    <path d="M150 115 L120 85 Q 150 80 180 85 Z" fill="#FFC0CB"/>
+                    <path d="M150 115 L120 145 Q 150 150 180 145 Z" fill="#FFC0CB"/>
+                    <circle cx="150" cy="115" r="15" fill="#E04060"/>
+                </svg>
+            </div>
+            <p class="muted">Tap the gift to unwrap</p>
+        </section>
+
+        <section id="final-message" class="screen flex flex-col items-center justify-center p-6 gap-4">
+            <div class="bg-gradient-to-br from-purple-800 to-pink-600 p-8 rounded-3xl shadow-2xl max-w-md w-full text-center">
+                <div class="w-16 h-16 mx-auto mb-4">
+                    <img id="final-logo" src="" alt="Profile Icon" class="app-logo w-full h-full">
+                </div>
+                <p class="text-3xl font-bold">Lots of love for you ❤️</p>
+                <p class="muted mt-2 mb-4">Once again, Happy Birthday! Hope you loved your surprise!</p>
+                <div class="flex justify-center gap-2">
+                    <button class="button-primary p-2 px-4 rounded-full" onclick="goToScreen('start')">Replay</button>
+                    <a class="p-2 px-4 rounded-full bg-white bg-opacity-10" href="#" id="download-link">Save Page</a>
+                </div>
+            </div>
+        </section>
+        
+    </div> 
     <script>
         /*****************************************************************************
          * Optimized Birthday Surprise Application Logic
@@ -456,49 +451,46 @@
         // ---------- REAL IMAGE URLS (Replace with static paths if needed) ----------
         
         const IMAGE_PATHS = {
-  LOGO_ICON: './images/lg.jpg',
-  PHOTO_1: './images/img1.jpg',   // corrected
-  PHOTO_2: './images/img2.jpg',   // corrected
-  PHOTO_3: './images/img3.jpg',   // corrected
-  PHOTO_4: './images/img4.jpg',
-  PHOTO_5: './images/img5.jpg', 
-  COVER_1:  './images/cvr3.jpg',
-  COVER_2:  './images/cvr4.jpg',
-  COVER_3:  './images/cvr1.jpg',
-  COVER_4:  './images/IMG-20251104-WA0025.jpg',
-  COVER_5:  './images/IMG-20251104-WA0039.jpg',
-  COVER_6:  './images/cvr4.jpg',
-    // use this if you have a 4th image
-  GIFT_IMG: './images/lg.jpg'
-};
+          LOGO_ICON: './images/lg.jpg',
+          PHOTO_1: './images/img1.jpg', 
+          PHOTO_2: './images/img2.jpg',   
+          PHOTO_3: './images/img3.jpg',   
+          PHOTO_4: './images/img4.jpg',
+          PHOTO_5: './images/img5.jpg', 
+          COVER_1:  './images/cvr3.jpg',
+          COVER_2:  './images/cvr4.jpg',
+          COVER_3:  './images/cvr1.jpg',
+          COVER_4:  './images/IMG-20251104-WA0025.jpg',
+          COVER_5:  './images/IMG-20251104-WA0039.jpg',
+          COVER_6:  './images/cvr4.jpg',
+          GIFT_IMG: './images/lg.jpg'
+        };
 
-const cards = [
-  IMAGE_PATHS.PHOTO_1,
-  IMAGE_PATHS.PHOTO_2,
-  IMAGE_PATHS.PHOTO_3,
-  IMAGE_PATHS.PHOTO_4,
-  IMAGE_PATHS.PHOTO_5,
-  IMAGE_PATHS.COVER_2,
-  IMAGE_PATHS.COVER_3,
-  IMAGE_PATHS.COVER_4,
-  IMAGE_PATHS.COVER_5,
-  IMAGE_PATHS.COVER_1
-    ,
-    IMAGE_PATHS.COVER_6
-    ,
-  IMAGE_PATHS.GIFT_IMG
-];
-        // Page/message content for the book (Now 4 entries: P0, P1, P2, P3)
+        const cards = [
+          IMAGE_PATHS.PHOTO_1,
+          IMAGE_PATHS.PHOTO_2,
+          IMAGE_PATHS.PHOTO_3,
+          IMAGE_PATHS.PHOTO_4,
+          IMAGE_PATHS.PHOTO_5,
+          IMAGE_PATHS.COVER_2,
+          IMAGE_PATHS.COVER_3,
+          IMAGE_PATHS.COVER_4,
+          IMAGE_PATHS.COVER_5,
+          IMAGE_PATHS.COVER_1,
+          IMAGE_PATHS.COVER_6,
+          IMAGE_PATHS.GIFT_IMG
+        ];
+        // Page/message content for the book 
         const BOOK_PAGES = [
-    { text: "Waqt tumhein zinda rakhe meri jaan..", img: IMAGE_PATHS.COVER_1 }, // P0
-    { text: "Rehmaton ke darwaze tum par khulein aur unhein kabhi band honay ka hukm na miley.", img: IMAGE_PATHS.COVER_2 }, // P1
-    { text: "Bahaarein tum par fida ho jaein woh tum se juda honay par naalaan rahein... 🌸🥺", img: IMAGE_PATHS.COVER_3 }, // P2
-    { text: "Be-sukooni ke saaye andhe aur behray ho jaein tum tak aanay ke liye unhein koi raah dikhai na de.", img: IMAGE_PATHS.COVER_4 }, // P3
-    { text: "Qismat ka qadam agar tumhare liye koi dukh likhnay ka iraada rakhta hai toh main sar sajday mein jhukaata aur dua karta hoon ke aisa karnay se pehle qismat ki yaad-daasht kho jaye...", img: IMAGE_PATHS.COVER_5 }, // P4
-    { text: "Tumhari jaan mein aab-e-hayaat halul kar jaaye.", img: IMAGE_PATHS.COVER_6 } // P5
-];
+            { text: "Waqt tumhein zinda rakhe meri jaan..", img: IMAGE_PATHS.COVER_1 }, // P0
+            { text: "Rehmaton ke darwaze tum par khulein aur unhein kabhi band honay ka hukm na miley.", img: IMAGE_PATHS.COVER_2 }, // P1
+            { text: "Bahaarein tum par fida ho jaein woh tum se juda honay par naalaan rahein... 🌸🥺", img: IMAGE_PATHS.COVER_3 }, // P2
+            { text: "Be-sukooni ke saaye andhe aur behray ho jaein tum tak aanay ke liye unhein koi raah dikhai na de.", img: IMAGE_PATHS.COVER_4 }, // P3
+            { text: "Qismat ka qadam agar tumhare liye koi dukh likhnay ka iraada rakhta hai toh main sar sajday mein jhukaata aur dua karta hoon ke aisa karnay se pehle qismat ki yaad-daasht kho jaye...", img: IMAGE_PATHS.COVER_5 }, // P4
+            { text: "Tumhari jaan mein aab-e-hayaat halul kar jaaye.", img: IMAGE_PATHS.COVER_6 } // P5
+        ];
 
-        // Messages for the Balloon Pop Game (Expanded to 8 messages)
+        // Messages for the Balloon Pop Game
         const MESSAGE_POPS = [
             "You are simply awesome!",
             "Never stop shining bright!",
@@ -525,6 +517,7 @@ const cards = [
         const EL = {
             preloader: document.getElementById('preloader'),
             preloaderFill: document.getElementById('preloader-fill'),
+            appWrapper: document.getElementById('app-wrapper'), // NEW: App wrapper
             logoImg: document.getElementById('logo-img'),
             finalLogo: document.getElementById('final-logo'),
             startName: document.getElementById('start-screen-name'),
@@ -538,7 +531,6 @@ const cards = [
             bloonsTotal: document.getElementById('bloons-total'),
             cardStack: document.getElementById('card-stack'),
             book: document.getElementById('book'),
-            // New/Updated Book Element IDs
             bookLeftInner: document.getElementById('book-page-left-inner'),
             bookRightInner: document.getElementById('book-page-right-inner'),
             bookCover: document.getElementById('book-page-cover'),
@@ -554,42 +546,37 @@ const cards = [
          * Preloads images and updates the progress bar.
          */
         function preloadImages(list) {
-    const EL = document.getElementById('preloader'); 
-    let loaded = 0;
-    
-    const update = (resolve) => {
-        loaded++;
-        const percent = Math.round((loaded / list.length) * 100);
-        EL.style.width = percent + '%';
-        resolve('ok'); 
-    };
+            let loaded = 0;
+            const fillElement = EL.preloaderFill;
+            const totalToLoad = list.length;
+            
+            if (totalToLoad === 0) {
+                return Promise.resolve();
+            }
 
-    return Promise.all(list.map(src => new Promise(resolve => {
-        const img = new Image();
-        img.onload = () => update(resolve);
-        img.onerror = () => {
-            console.warn(`Failed to load image: ${src}`);
-            update(resolve);
-        };
-        img.src = src;
-    }))).then(results => results);
-        }
+            const update = (resolve) => {
+                loaded++;
+                const percent = Math.round((loaded / totalToLoad) * 100);
+                
+                if (fillElement) {
+                    fillElement.style.width = percent + '%'; 
+                }
+                resolve('ok'); 
+            };
 
-    return Promise.all(list.map(src => new Promise(resolve => {
-        const img = new Image();
-
-        // 1. Success handler: call update and resolve
-        img.onload = () => update(resolve);
-
-        // 2. Error handler: call update and resolve (to prevent blocking)
-        img.onerror = () => {
-            console.warn(`Failed to load image: ${src}`);
-            update(resolve);
-        };
-        
-        img.src = src;
-    }))).then(results => results);
-    // --- Correction End ---
+            return Promise.all(list.map(src => new Promise(resolve => {
+                if (!src) { 
+                    update(resolve);
+                    return;
+                }
+                const img = new Image();
+                img.onload = () => update(resolve);
+                img.onerror = () => {
+                    console.warn(`Failed to load image: ${src}`);
+                    update(resolve); 
+                };
+                img.src = src;
+            })));
         }
 
         /**
@@ -599,20 +586,16 @@ const cards = [
             state.isDecorated = false;
             state.isLit = false;
 
-            // Reset Candle/Flame
             if (EL.cakeFlame) { 
                 EL.cakeFlame.style.display = 'none'; 
                 EL.cakeFlame.classList.remove('candle-flame-lit'); 
             }
 
-            // Reset Decoration Group (remove banner/sprinkles)
             const group = document.getElementById('cake-decoration-group');
             if (group) group.innerHTML = '';
 
-            // Reset Message Visibility
             if (EL.happyMessage) EL.happyMessage.style.opacity = '0';
 
-            // Reset Button to initial 'Decorate' state
             if (EL.decorateButton) {
                 EL.decorateButton.textContent = 'Decorate';
                 EL.decorateButton.onclick = decorateCake;
@@ -620,11 +603,10 @@ const cards = [
                 EL.decorateButton.classList.add('button-primary');
             }
             
-            // Reset the cake bloons (hearts)
             document.querySelectorAll('.cake-bloon-wrapper').forEach(b => {
                 b.classList.remove('popped');
-                b.querySelector('.bloon-text').classList.remove('pop'); // Reset text animation
-                b.style.display = 'block'; // Show the heart again
+                b.querySelector('.bloon-text').classList.remove('pop');
+                b.style.display = 'block';
                 const msg = b.querySelector('.cake-bloon-message');
                 if(msg) msg.classList.remove('show');
             });
@@ -635,34 +617,31 @@ const cards = [
          * Handles screen switching logic.
          */
         function goToScreen(screenId) {
-    document.querySelectorAll('.screen').forEach(s => {
-        s.classList.remove('active');
-    });
-    const next = document.getElementById(screenId);
-    if (next) next.classList.add('active');
-    state.currentScreen = screenId;
+            document.querySelectorAll('.screen').forEach(s => {
+                s.classList.remove('active');
+            });
+            const next = document.getElementById(screenId);
+            if (next) next.classList.add('active');
+            state.currentScreen = screenId;
 
-    // Do screen-specific setup
-    if (screenId === 'cake') {
-        resetCakeState(); // Reset state when going to cake screen
-    }
-    if (screenId === 'start') {
-         // Also reset cake state if we go back to the start screen (via replay)
-        resetCakeState(); 
-    }
-    if (screenId === 'light-up') {
-        startConfettiAnimation();
-    }
-    if (screenId === 'bloons-game') {
-        // Ensure bloons are set up correctly on every entry
-        setupBloonsGame();
-    }
-    if (screenId === 'card-swipe') {
-        renderCardStack();
-    }
-    if (screenId === 'message-book') {
-        setupMessageBook();
-    }
+            if (screenId === 'cake') {
+                resetCakeState(); 
+            }
+            if (screenId === 'start') {
+                resetCakeState(); 
+            }
+            if (screenId === 'light-up') {
+                startConfettiAnimation();
+            }
+            if (screenId === 'bloons-game') {
+                setupBloonsGame();
+            }
+            if (screenId === 'card-swipe') {
+                renderCardStack();
+            }
+            if (screenId === 'message-book') {
+                setupMessageBook();
+            }
         }
 
         /**
@@ -671,10 +650,9 @@ const cards = [
         function startTheSurprise() {
             const input = document.getElementById('age-input');
             const age = parseInt(input.value, 10) || 21;
-            const name = EL.startName.textContent; // Using default name if no URL param
+            const name = EL.startName.textContent;
             
             if (EL.startAge) EL.startAge.textContent = `${age} years ago!`;
-            // Update display name across the app
             EL.displayName.textContent = name;
             document.getElementById('start-screen-name').textContent = name;
             
@@ -694,17 +672,15 @@ const cards = [
             const flagWidth = 18;
             let currentX = 50; 
 
-            // Generate flags for HAPPY BIRTHDAY
             for (let i = 0; i < letters.length; i++) {
                 const letter = letters[i];
                 if (letter === ' ') {
-                    currentX += 8; // Extra space for word break
+                    currentX += 8;
                     continue;
                 }
 
                 const color = flagColors[i % flagColors.length];
-                // Vary y position and rotation for a festive look
-                const yOffset = 15 + Math.sin(i * 0.5) * 5;
+                const yOffset = 5 + Math.sin(i * 0.5) * 5;
                 const rotation = -3 + Math.cos(i * 0.5) * 6;
 
                 bannerSVG += `
@@ -713,20 +689,14 @@ const cards = [
                         <text x="${flagWidth/2}" y="15" fill="#FFFFFF" font-size="14" text-anchor="middle" font-weight="bold">${letter}</text>
                     </g>
                 `;
-                currentX += flagWidth + 3; // Move to the next position
+                currentX += flagWidth + 3;
             }
 
-            // String path spanning from x=45 to x=360
-            const stringPath = `<path d="M45 18 Q 200 8, 360 18" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-linecap="round"/>`;
-
-            // Combine banner and sprinkles
+            const stringPath = `<path d="M70 15 Q 200 5, 330 15" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-linecap="round"/>`;
             group.innerHTML = `
                 <g id="banner-group" transform="translate(0, 0)">
-                    <!-- String -->
                     ${stringPath}
-                    <!-- Flags -->
                     ${bannerSVG}
-                    <!-- Heart Sprinkles -->
                     <g id="heart-sprinkles">
                         <path d="M115 70 C 110 65, 120 65, 125 70 L 115 80 Z" fill="#FFC0CB" transform="scale(1.2) translate(0, 0)"/>
                         <path d="M165 65 C 160 60, 170 60, 175 65 L 165 75 Z" fill="#DA70D6" transform="scale(1) translate(-10, 5)"/>
@@ -736,13 +706,11 @@ const cards = [
                 </g>
             `;
 
-            // animate sprinkles / decor fade-in
             Array.from(group.querySelectorAll('*')).forEach((el, idx) => {
                 el.style.opacity = '0';
                 setTimeout(() => { el.style.transition = 'opacity .35s ease'; el.style.opacity = '1'; }, idx * 60);
             });
 
-            // update button
             const btn = EL.decorateButton;
             btn.textContent = 'Light the Candle!';
             btn.onclick = lightUpCake;
@@ -763,17 +731,14 @@ const cards = [
                 const spark = document.createElement('div');
                 spark.className = 'firework-spark';
                 
-                // Position the spark relative to the candle center (approx 50% 40% of the screen)
                 spark.style.left = '50%';
                 spark.style.top = '40%'; 
 
-                // Calculate random trajectory for fireworks effect
                 const angle = (i / numSparks) * 2 * Math.PI;
-                const distance = 150 + Math.random() * 100; // 150px to 250px outward
+                const distance = 150 + Math.random() * 100;
                 const endX = Math.cos(angle) * distance;
                 const endY = Math.sin(angle) * distance;
                 
-                // Use CSS variables for keyframe end points
                 spark.style.setProperty('--end-x', `${endX}px`);
                 spark.style.setProperty('--end-y', `${endY}px`);
                 
@@ -782,7 +747,6 @@ const cards = [
                 
                 cakeScreen.appendChild(spark);
                 
-                // Cleanup after animation
                 setTimeout(() => spark.remove(), 700);
             }
         }
@@ -792,18 +756,14 @@ const cards = [
          */
         function lightUpCake() {
             if (state.isLit) return;
-            // show flame
             if (EL.cakeFlame) {
                 EL.cakeFlame.style.display = 'block';
                 EL.cakeFlame.classList.add('candle-flame-lit');
             }
-            // show message
             if (EL.happyMessage) EL.happyMessage.style.opacity = '1';
             
-            // Trigger Fireworks
             triggerFireworks();
 
-            // go to confetti after short delay
             setTimeout(() => { 
                 goToScreen('light-up'); 
                 state.isLit = true; 
@@ -818,7 +778,7 @@ const cards = [
             if (wrapper.classList.contains('popped')) return;
 
             wrapper.classList.add('popped');
-            wrapper.querySelector('.bloon-text').classList.add('pop'); // Start pop animation
+            wrapper.querySelector('.bloon-text').classList.add('pop');
             
             const messageText = wrapper.getAttribute('data-msg');
             const messageBubble = wrapper.querySelector('.cake-bloon-message');
@@ -827,13 +787,11 @@ const cards = [
                 messageBubble.textContent = messageText;
                 messageBubble.classList.add('show');
                 
-                // Hide message after 1.5 seconds
                 setTimeout(() => {
                     messageBubble.classList.remove('show');
                 }, 1500);
             }
             
-            // Hide the heart entirely after the pop animation (don't remove, so we can reset it later)
             setTimeout(() => {
                  wrapper.style.display = 'none';
             }, 500); 
@@ -851,7 +809,6 @@ const cards = [
                 el.classList.add('confetti-piece');
                 const colors = ['#FF69B4','#8A2BE2','#ffffff','#00FF00','#FFD700'];
                 el.style.background = colors[i % colors.length];
-                // Use viewport units for better sizing across devices
                 el.style.left = (Math.random()*100) + 'vw';
                 el.style.top = (-Math.random()*20) + 'vh';
                 el.style.opacity = '1';
@@ -864,7 +821,6 @@ const cards = [
                 container.appendChild(el);
                 requestAnimationFrame(()=> setTimeout(()=> el.classList.add('show'), 20));
             }
-            // Transition to the next screen after the main confetti burst ends
             setTimeout(()=>{
                 container.innerHTML = '';
                 goToScreen('confetti-message');
@@ -876,14 +832,11 @@ const cards = [
          * Defines the relative positions (0.0 to 1.0) for the balloons.
          */
         function getBloonRelativePositions(){
-             // Added 8 positions spread across left and right sides
             return [
-                // Left Side
                 {x: 0.2, y: 0.5},
                 {x: 0.35, y: 0.25},
                 {x: 0.1, y: 0.7},
                 {x: 0.45, y: 0.75},
-                // Right Side
                 {x: 0.8, y: 0.5},
                 {x: 0.65, y: 0.25},
                 {x: 0.9, y: 0.7},
@@ -899,30 +852,24 @@ const cards = [
             container.innerHTML = ''; 
             state.messagesPopped=0;
             
-            // Use the length of MESSAGE_POPS for total count, which is 8
             EL.bloonsCount.textContent = '0';
             EL.bloonsTotal.textContent = MESSAGE_POPS.length; 
 
-            const rect = container.getBoundingClientRect();
             const relativePositions = getBloonRelativePositions();
-            
-            // Clamp the number of bloons to the number of available messages
             const numBloons = Math.min(relativePositions.length, MESSAGE_POPS.length);
 
             const svgNS = "http://www.w3.org/2000/svg";
             const svg = document.createElementNS(svgNS,'svg');
             svg.setAttribute('width','100%');
             svg.setAttribute('height','100%');
-            svg.style.position='absolute'; svg.style.left=0; svg.style.top=0; svg.style.zIndex=1; /* SVG z-index is lower */
+            svg.style.position='absolute'; svg.style.left=0; svg.style.top=0; svg.style.zIndex=1;
             container.appendChild(svg);
 
-            // Re-fetch dimensions after adding SVG to get current pixel size
             const currentRect = container.getBoundingClientRect();
 
             for(let i=0; i < numBloons; i++){
                 const p = relativePositions[i];
                 
-                // 1. Calculate pixel coordinates for the SVG path (using current pixel size)
                 const pixX = p.x * currentRect.width;
                 const pixY = p.y * currentRect.height;
 
@@ -937,13 +884,12 @@ const cards = [
                 path.setAttribute('id',`line-${i}`);
                 svg.appendChild(path);
 
-                // 2. Balloon wrapper (using percentages for responsive position)
+                // Balloon wrapper
                 const wrapper = document.createElement('div');
                 wrapper.className = 'bloon-wrapper';
                 wrapper.style.left = (p.x * 100) + '%'; 
                 wrapper.style.top = (p.y * 100) + '%'; 
                 wrapper.dataset.index = i;
-                // NEW: Use heart emoji instead of balloon emoji
                 wrapper.innerHTML = `<div class="bloon-text">❤️</div><div class="message-bubble hidden" id="msg-${i}" style="position:absolute; top:-48px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg,#A855F7,#EC4899); color:white; padding:8px 10px; border-radius:9999px; font-weight:700; z-index:50; pointer-events:none; opacity:0; transition:all .28s;">${MESSAGE_POPS[i]}</div>`;
                 wrapper.addEventListener('click', popBloon);
                 container.appendChild(wrapper);
@@ -964,7 +910,6 @@ const cards = [
 
             if (bloon){ bloon.classList.add('pop'); }
             
-            // Show message with an animation
             if (msg){
                 msg.classList.remove('hidden');
                 setTimeout(()=>{
@@ -972,7 +917,6 @@ const cards = [
                     msg.style.transform='translate(-50%, -50%) scale(1)';
                 },20);
                 
-                // Make message disappear after 2 seconds
                 setTimeout(() => {
                     msg.style.opacity = '0';
                     msg.style.transform = 'translate(-50%, -10px) scale(0.9)';
@@ -980,7 +924,6 @@ const cards = [
                 }, 2000);
             }
 
-            // change line color
             const line = document.getElementById(`line-${idx}`);
             if (line) { line.setAttribute('stroke','var(--primary-pink)'); line.setAttribute('stroke-width','3'); }
 
@@ -988,7 +931,6 @@ const cards = [
             EL.bloonsCount.textContent = state.messagesPopped;
             
             if (state.messagesPopped === MESSAGE_POPS.length) {
-                // finished
                 setTimeout(()=> goToScreen('card-swipe'), 1500);
             }
         }
@@ -996,22 +938,20 @@ const cards = [
         /**
          * CARD SWIPE (simple stack, click to next)
          */
-        const card = [ IMAGE_PATHS.PHOTO_1, IMAGE_PATHS.PHOTO_2, IMAGE_PATHS.PHOTO_3, IMAGE_PATHS.PHOTO_4, IMAGE_PATHS.PHOTO_5 ];
-
         function renderCardStack(){
             const stack = EL.cardStack; stack.innerHTML='';
-            // Render 3 visible cards for the stack effect
+            
             for (let i=0;i<3;i++){
-                const index = (state.currentCardIndex + i) % card.length;
+                const index = (state.currentCardIndex + i) % cards.length;
                 const el = document.createElement('div');
                 el.className = 'absolute w-full h-full rounded-2xl bg-white shadow-xl transition-all duration-300';
                 el.style.transform = `scale(${1 - i*0.06}) translateY(${i*14}px)`;
                 el.style.zIndex = (3-i).toString();
-                el.style.backgroundImage = `url(${card[index]})`;
+                el.style.backgroundImage = `url(${cards[index]})`;
                 el.style.backgroundSize='cover'; el.style.backgroundPosition='center'; el.style.border = '4px solid '+(i===0? 'var(--primary-pink)' : '#EEE');
                 if (i===0) {
                     el.style.cursor='pointer';
-                    el.onclick = ()=> { state.currentCardIndex = (state.currentCardIndex + 1) % card.length; renderCardStack(); };
+                    el.onclick = ()=> { state.currentCardIndex = (state.currentCardIndex + 1) % cards.length; renderCardStack(); };
                 }
                 stack.appendChild(el);
             }
@@ -1022,135 +962,101 @@ const cards = [
          * MESSAGE BOOK (Dual Content Page Flow)
          */
         
-        /**
-         * Helper to format content for a page block.
-         */
         function formatPageContent(page, pageNum) {
-            if (!page) return ''; // Should not happen with clamping, but safety first
+            if (!page) return '';
             return `
-                <div style="text-align:center;">
-                    ${ page.img ? `<img src="${page.img}" alt="page image" style="max-width:80%; border-radius:8px; display:block; margin:0 auto 12px; object-fit:cover; height:45%;" />` : '' }
-                    <p style="font-size:1.25rem; color:#222; line-height:1.45; max-width:36rem; margin:0 auto;">${page.text}</p>
+                <div style="text-align:center; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                    <div>
+                        ${ page.img ? `<img src="${page.img}" alt="page image" style="max-width:90%; max-height: 45vh; border-radius:8px; display:block; margin:0 auto 12px; object-fit:contain;" />` : '' }
+                        <p style="font-size:1.25rem; color:#222; line-height:1.45; max-width:36rem; margin:0 auto;">${page.text}</p>
+                    </div>
                     <p class="text-sm mt-4">Page ${pageNum} of ${BOOK_PAGES.length}</p>
                 </div>
             `;
         }
 
-        /**
-         * Sets up the book state and initial cover display.
-         */
         function setupMessageBook(){
-            state.bookIndex = -1; // -1: Closed Cover
+            state.bookIndex = -1;
             
-            // Ensure cover is closed initially and navigation is hidden
             EL.book.classList.remove('flipped');
             EL.prevPageBtn.classList.add('hidden');
             EL.nextPageBtn.classList.add('hidden');
             EL.flipCoverBtn.classList.remove('hidden');
 
-            // Reset content
             EL.bookLeftInner.innerHTML = `<h3 class="text-xl font-bold">This is the back cover.</h3><p class="mt-4">Flip the cover to start reading.</p>`;
             EL.bookRightInner.innerHTML = `<h3 class="text-2xl font-bold">Tap 'Open Book' Below</h3><p class="mt-4">You're about to read something special...</p>`;
-            EL.bookCover.style.display = 'flex'; // Ensure cover is visible
+            EL.bookCover.style.display = 'flex';
         }
 
-        /**
-         * Renders content to the visible left and right pages based on state.bookIndex.
-         */
         function renderBookPages() {
-            // state.bookIndex represents the index of the RIGHT-HAND page.
             const pageIndexRight = state.bookIndex;
             const pageIndexLeft = state.bookIndex - 1;
 
-            // Load Left Page (P_i-1)
             if (pageIndexLeft >= 0) {
                 const leftPageData = BOOK_PAGES[pageIndexLeft];
-                EL.bookLeftInner.innerHTML = formatPageContent(leftPageData, pageIndexLeft + 1);
+                EL.bookLeftInner.innerHTML = formatPageContent(leftPageData, pageIndexLeft + 1); 
             } else {
-                EL.bookLeftInner.innerHTML = `<h3 class="text-xl font-bold">Back Cover</h3><p class="mt-4">Thanks for flipping!</p>`;
+                EL.bookLeftInner.innerHTML = `<div class="page-inner"><h3 class="text-xl font-bold">Back Cover</h3><p class="mt-4">Thanks for flipping!</p></div>`;
             }
             
-            // Load Right Page (P_i)
             if (pageIndexRight < BOOK_PAGES.length) {
                 const rightPageData = BOOK_PAGES[pageIndexRight];
                 EL.bookRightInner.innerHTML = formatPageContent(rightPageData, pageIndexRight + 1);
+            } else {
+                EL.bookRightInner.innerHTML = `<div class="page-inner"><h3 class="text-xl font-bold">The End!</h3><p class="mt-4">Time for your gift!</p></div>`;
             }
 
             updateBookNavigation();
         }
         
-        /**
-         * Updates the page number and enables/disables navigation buttons based on bounds.
-         */
         function updateBookNavigation() {
-            const isFirstPageVisible = state.bookIndex === 1; // P0 is the first content page shown on the left
-            const isLastPageVisible = state.bookIndex === BOOK_PAGES.length - 1;
+            const maxPages = BOOK_PAGES.length;
 
-            // Handle Prev Button
-            if (isFirstPageVisible) {
+            if (state.bookIndex <= 1) { 
                 EL.prevPageBtn.classList.add('opacity-50', 'pointer-events-none');
             } else {
                 EL.prevPageBtn.classList.remove('opacity-50', 'pointer-events-none');
             }
 
-            // Handle Next Button
-            if (isLastPageVisible) {
+            if (state.bookIndex >= maxPages) {
                 EL.nextPageBtn.classList.add('opacity-50', 'pointer-events-none');
-                 // Automatically go to the next screen after the last visible page
-                 setTimeout(() => goToScreen('gift-box'), 1000);
+                 if (state.bookIndex === maxPages) {
+                    setTimeout(() => goToScreen('gift-box'), 1000);
+                 }
             } else {
                 EL.nextPageBtn.classList.remove('opacity-50', 'pointer-events-none');
             }
         }
 
-
-        /**
-         * Flips the cover (one time action).
-         */
         function flipCover(){
-            // 1. Hide the cover button
             EL.flipCoverBtn.classList.add('hidden');
             
-            // 2. Set index to display first two content pages (P0 Left, P1 Right)
-            state.bookIndex = 1; 
-            
-            // 3. Load content for P0 and P1 into the stable pages 
+            state.bookIndex = 1;
             renderBookPages();
             
-            // 4. Flip the cover open with animation
             EL.book.classList.add('flipped');
 
-            // 5. Hide the cover element once the rotation is done (to prevent pointer events/shadow issues)
             setTimeout(() => {
                 EL.bookCover.style.display = 'none';
             }, 950);
 
-            // 6. Show navigation buttons and finalize
             EL.prevPageBtn.classList.remove('hidden');
             EL.nextPageBtn.classList.remove('hidden');
         }
 
-        /**
-         * Changes the page content by updating the stable left and right pages.
-         */
         function changePage(delta){
             let newIndex = state.bookIndex + delta;
-            const maxIndex = BOOK_PAGES.length - 1;
+            const maxIndex = BOOK_PAGES.length; 
             
-            // Clamp the index
             if (newIndex < 1 || newIndex > maxIndex) return;
             
-            // Disable buttons temporarily to prevent double clicks
             EL.prevPageBtn.disabled = true;
             EL.nextPageBtn.disabled = true;
             
-            // 1. Update the state index immediately
             state.bookIndex = newIndex;
             
-            // 2. Render the new content pair (P_i-1, P_i) instantly
             renderBookPages();
             
-            // 3. Re-enable buttons after a short delay for a smoother feel
             setTimeout(() => {
                 EL.prevPageBtn.disabled = false;
                 EL.nextPageBtn.disabled = false;
@@ -1164,7 +1070,6 @@ const cards = [
         function tapGift(){
             const gift = document.getElementById('gift-box-image');
             if (!gift) return;
-            // Add a small shake animation
             gift.animate([{ transform: 'scale(1)' },{ transform: 'scale(0.95)' },{ transform: 'scale(1.06)' }, { transform: 'scale(1)' }], { duration: 450 });
             setTimeout(()=> goToScreen('final-message'), 500);
         }
@@ -1175,17 +1080,12 @@ const cards = [
          * Final UI setup after preloading completes.
          */
         function initUIAfterLoad(){
-            // set logo images
             EL.logoImg.src = IMAGE_PATHS.LOGO_ICON;
             EL.finalLogo.src = IMAGE_PATHS.LOGO_ICON;
             
-            // Reset cake state on page load to ensure clean start
             resetCakeState(); 
-
-            // initial render of cards
             renderCardStack();
 
-            // Support for URL params (?age=... & ?name=...)
             const params = new URLSearchParams(window.location.search);
             const age = params.get('age');
             const name = params.get('name');
@@ -1194,12 +1094,11 @@ const cards = [
                 document.getElementById('start-screen-name').textContent = name; 
                 document.getElementById('display-name').textContent = name; 
             }
-            // ensure start screen is active
             goToScreen('start');
         }
 
         /**
-         * Download/Save page link listener (from your second code snippet).
+         * Download/Save page link listener.
          */
         document.getElementById('download-link').addEventListener('click', (ev) => {
             ev.preventDefault();
@@ -1215,14 +1114,25 @@ const cards = [
             URL.revokeObjectURL(url);
         });
 
-        // ---------- APP BOOTSTRAP ----------
+        // ---------- APP BOOTSTRAP (FIXED WITH CONTENT HIDING) ----------
 
-        const imagesToLoad = Object.values(IMAGE_PATHS).concat(BOOK_PAGES.map(p => p.img).filter(Boolean));
+        const allImagePaths = new Set(Object.values(IMAGE_PATHS).concat(BOOK_PAGES.map(p => p.img).filter(Boolean)));
+        const imagesToLoad = Array.from(allImagePaths).filter(Boolean);
+
         preloadImages(imagesToLoad).then(()=> {
-            // hide preloader
-            EL.preloader.style.display = 'none';
-            // start UI init
-            initUIAfterLoad();
+            // Start the fade-out using CSS transition
+            EL.preloader.style.opacity = '0';
+            
+            // Wait for the fade-out to finish (450ms from CSS + 50ms buffer)
+            setTimeout(() => {
+                EL.preloader.style.display = 'none';
+                EL.preloader.setAttribute('aria-hidden', 'true');
+                
+                // FIX: Reveal the main app wrapper content
+                EL.appWrapper.style.display = 'block';
+
+                initUIAfterLoad();
+            }, 500); 
         });
 
         // Expose functions globally for inline HTML event handlers
@@ -1234,17 +1144,11 @@ const cards = [
         window.flipCover = flipCover;
         window.changePage = changePage;
         window.tapGift = tapGift;
-        window.popCakeBloon = popCakeBloon; // NEW
+        window.popCakeBloon = popCakeBloon; 
 
         // Make sure resize keeps bloons correct when container changes size
         window.addEventListener('resize', ()=> { if (state.currentScreen === 'bloons-game') setupBloonsGame(); });
-        document.addEventListener('DOMContentLoaded', () => {
-    preloadImages(Object.values(IMAGE_PATHS)).then(() => {
-        EL.preloader.style.display = 'none';
-        goToScreen('start');
-    });
-});
 
     </script>
 </body>
-</html>
+                        </html>
